@@ -1,14 +1,39 @@
 name: Collaborative Workflow
 
 on: 
-   push: 
-       branches: 
-          - main
+  push: 
+    branches: 
+      - main
 
 jobs: 
-    update_html_and_readme: 
-       runs-on: ubuntu-latest  
-       steps: 
-           # Step 1: Checkout the repository 
-            - name: Checkout Repository  
-              uses: actions/checkout@v3
+  update_html_and_readme: 
+    runs-on: ubuntu-latest  
+    steps: 
+      # Step 1: Checkout the repository 
+      - name: Checkout Repository  
+        uses: actions/checkout@v3
+
+      # Step 2: Update index.html based on GitHub actor
+      - name: Update HTML if actor is Team Leader
+        if: github.actor == 'team-leader-username'
+        run: |
+          sed -i '/<\/body>/i <p>Updated by Team Leader on "'$(date)'"</p>' index.html
+
+      - name: Update HTML if actor is Member 1
+        if: github.actor == 'member1-username'
+        run: |
+          sed -i '/<\/body>/i <p>Updated by Member 1 on "'$(date)'"</p>' index.html
+
+      - name: Update HTML if actor is Member 2
+        if: github.actor == 'member2-username'
+        run: |
+          sed -i '/<\/body>/i <p>Updated by Member 2 on "'$(date)'"</p>' index.html
+
+      # Step 3: Commit and push changes (optional if automation is expected)
+      - name: Commit changes
+        run: |
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
+          git add index.html
+          git commit -m "Updated index.html by ${{ github.actor }}"
+          git push
