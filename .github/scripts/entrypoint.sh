@@ -1,12 +1,11 @@
 #!/bin/bash
-set -e
 
-# Run the Python script to analyze vowels
-python3 /frequency.py > vowel_report.txt
+echo "Starting Frequency Analyzer..."
 
-# Get the GitHub username and current timestamp
-USERNAME="${GITHUB_ACTOR}"
-TIMESTAMP=$(date)
+# Running the Python frequency analyzer
+FREQ_RESULT=$(python3 /app/.github/scripts/frequency.py /app/data.txt)
 
-# Call the script to update the README
-bash /update_readme.sh "$USERNAME" "$TIMESTAMP"
+# Running update_readme.sh
+bash /app/.github/scripts/update_readme.sh "$FREQ_RESULT" "$GITHUB_USER"
+
+echo "Process Completed!"
