@@ -1,14 +1,22 @@
+import sys
 from collections import Counter
 
-try:
-    with open("data.txt", "r") as f:
-        content = f.read().lower()
-except FileNotFoundError:
-    print("data.txt not found!")
-    exit(1)
+def count_vowels(file_path):
+    vowels = "aeiou"
+    try:
+        with open(file_path, 'r') as file:
+            text = file.read().lower()
+            counts = Counter(char for char in text if char in vowels)
+            return counts
+    except FileNotFoundError:
+        print(f"Error: {file_path} not found.")
+        sys.exit(1)
 
-vowels = "aeiou"
-counts = Counter(c for c in content if c in vowels)
+if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print("Usage: python3 frequency.py <file_path>")
+        sys.exit(1)
 
-for v in vowels:
-    print(f"{v}: {counts[v]}")
+    file_path = sys.argv[1]
+    result = count_vowels(file_path)
+    print(result)
