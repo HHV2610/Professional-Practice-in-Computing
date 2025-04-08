@@ -1,0 +1,5 @@
+name: "Vowel Frequency Analyzer"
+description: "Custom GitHub Action using Docker"
+runs:
+  using: "docker"
+  image: "../../../Dockerfile"
