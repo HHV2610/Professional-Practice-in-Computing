@@ -1,17 +1,28 @@
-name: Vowel Frequency Workflow
+name: Vowel Frequency Analyzer Workflow
 
 on:
   push:
-    paths:
-      - "data.txt"
+    branches:
+      - main
 
 jobs:
-  analyze-vowels:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: 🔄 Checkout Repository
+        uses: actions/checkout@v2
 
-      - name: Run vowel frequency analyzer
-        uses: ./.github/actions/vowel-frequency-analyzer
+      - name: 🐳 Build Docker Image
+        run: |
+          docker build -t vowel-frequency-analyzer:latest .
+
+      - name: 🚀 Run Docker Container
+        env:
+          GITHUB_ACTOR: ${{ github.actor }}
+        run: |
+          docker run --rm \
+            -e GITHUB_ACTOR=${{ env.GITHUB_ACTOR }} \
+            -v ${{ github.workspace }}:/app \
+            -w /app \
+            vowel-frequency-analyzer:latest
