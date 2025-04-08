@@ -1,0 +1,17 @@
+name: Vowel Frequency Workflow
+
+on:
+  push:
+    paths:
+      - "data.txt"
+
+jobs:
+  analyze-vowels:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run vowel frequency analyzer
+        uses: ./.github/actions/vowel-frequency-analyzer
