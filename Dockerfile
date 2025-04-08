@@ -1,11 +1,19 @@
-FROM python:3.11-slim
+# Use a Python base image
+FROM python:3.9-slim
 
-RUN apt-get update && apt-get install -y git
+# Set the working directory inside the container
+WORKDIR /app
 
-COPY .github/scripts/entrypoint.sh /entrypoint.sh
-COPY .github/scripts/frequency.py /frequency.py
-COPY .github/scripts/update_readme.sh /update_readme.sh
+# Install necessary dependencies including git
+RUN apt-get update && apt-get install -y git \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN chmod +x /entrypoint.sh /update_readme.sh
+# Copy the contents of the project to the /app directory
+COPY . .
 
-ENTRYPOINT ["/entrypoint.sh"]
+# Ensure the entrypoint script exists and is executable
+RUN chmod +x entrypoint.sh
+
+# Set the entrypoint to the entrypoint script
+ENTRYPOINT ["./entrypoint.sh"]
