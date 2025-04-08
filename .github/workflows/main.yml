@@ -3,7 +3,7 @@ name: Collaborative Workflow
 on: 
   push: 
     branches: 
-      - master  # Change to 'main' if your default branch is main
+      - master
 
 jobs: 
   update_html_and_readme: 
@@ -29,25 +29,19 @@ jobs:
         run: |
           sed -i '/<\/body>/i <p>Updated by Member 2 on "'$(date)'"</p>' index.html
 
-      # Step 3: Commit index.html changes
-      - name: Commit HTML changes
-        run: |
-          git config user.name "${{ github.actor }}"
-          git config user.email "${{ github.actor }}@users.noreply.github.com"
-          git add index.html
-          git commit -m "Updated index.html by ${{ github.actor }}"
-          git push
-
-      # Step 4: Append commit info to README.md
-      - name: Append commit info to README.md
+      # ✅ Step 3: Update README
+      - name: Append update log to README.md
         run: |
           echo "### Updated by ${{ github.actor }} on $(date '+%Y-%m-%d %H:%M:%S') [Commit: $(git rev-parse --short HEAD)]" >> README.md
 
-      # Step 5: Commit README.md update
-      - name: Commit README update
+      # ✅ Step 4: Commit and Push Changes
+      - name: Commit and Push Changes
         run: |
-          git config user.name "${{ github.actor }}"
-          git config user.email "${{ github.actor }}@users.noreply.github.com"
-          git add README.md
-          git commit -m "Appended log to README.md"
-          git push
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "Workflow: Updated HTML and README for ${{ github.actor }}" || echo "No changes to commit"
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+          git push origin master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
